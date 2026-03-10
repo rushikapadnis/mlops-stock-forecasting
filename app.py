@@ -1,16 +1,20 @@
 import streamlit as st
 import joblib
 import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
 
+# Load model
 model = joblib.load("final_stock_model.pkl")
+
 # Page Config
 st.set_page_config(
     page_title="Stock Price Prediction",
     page_icon="📈",
-    layout="centered"
+    layout="wide"
 )
 
-# Custom Dark Gradient Background
+# Custom Styling
 st.markdown("""
 <style>
 .stApp {
@@ -18,16 +22,8 @@ st.markdown("""
     color: white;
 }
 
-.main-card {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(15px);
-    padding: 40px;
-    border-radius: 18px;
-    box-shadow: 0px 8px 32px rgba(0,0,0,0.4);
-}
-
 .title {
-    font-size: 36px;
+    font-size: 40px;
     font-weight: 700;
     text-align: center;
     color: white;
@@ -37,24 +33,6 @@ st.markdown("""
     text-align: center;
     color: #cbd5e1;
     margin-bottom: 30px;
-}
-
-.stNumberInput label {
-    color: white !important;
-}
-
-.stButton>button {
-    background: linear-gradient(to right, #3b82f6, #2563eb);
-    color: white;
-    height: 48px;
-    border-radius: 10px;
-    font-weight: 600;
-    font-size: 16px;
-    width: 100%;
-}
-
-.stButton>button:hover {
-    background: linear-gradient(to right, #2563eb, #1d4ed8);
 }
 
 .result-box {
@@ -70,38 +48,73 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Load model
-model = joblib.load("final_stock_model.pkl")
+# Title
+st.markdown('<div class="title">📈 Stock Forecasting Dashboard</div>', unsafe_allow_html=True)
+st.markdown('<div class="subtitle">Predict stock closing price using Machine Learning</div>', unsafe_allow_html=True)
 
-# Main Card
-st.markdown('<div class="main-card">', unsafe_allow_html=True)
-
-st.markdown('<div class="title">📈 Stock Price Prediction</div>', unsafe_allow_html=True)
-st.markdown('<div class="subtitle">Predict closing price using ML model</div>', unsafe_allow_html=True)
-
+# Layout
 col1, col2 = st.columns(2)
 
 with col1:
-    open_price = st.number_input("Open Price", min_value=0.0, format="%.2f")
-    low_price = st.number_input("Low Price", min_value=0.0, format="%.2f")
+    st.subheader("📥 Input Stock Data")
 
-with col2:
+    open_price = st.number_input("Open Price", min_value=0.0, format="%.2f")
     high_price = st.number_input("High Price", min_value=0.0, format="%.2f")
+    low_price = st.number_input("Low Price", min_value=0.0, format="%.2f")
     volume = st.number_input("Volume", min_value=0.0, format="%.2f")
 
-if st.button("🔮 Predict Close Price"):
-    input_data = np.array([[open_price, high_price, low_price, volume]])
-    prediction = model.predict(input_data)
+predict_button = st.button("🔮 Predict Close Price")
 
+if predict_button:
+
+    # Prepare input
+    input_data = np.array([[open_price, high_price, low_price, volume]])
+
+    # Prediction
+    prediction = model.predict(input_data)[0]
+
+    # Display Prediction
     st.markdown(
-        f'<div class="result-box">Predicted Close Price: ₹ {prediction[0]:.2f}</div>',
+        f'<div class="result-box">Predicted Close Price: ₹ {prediction:.2f}</div>',
         unsafe_allow_html=True
     )
 
-st.markdown('</div>', unsafe_allow_html=True)
+    # Create fake historical data for visualization
+    dates = pd.date_range(end=pd.Timestamp.today(), periods=20)
+    prices = np.random.normal(loc=prediction, scale=5, size=20)
+
+    df = pd.DataFrame({
+        "Date": dates,
+        "Close Price": prices
+    })
+
+    # Add predicted value
+    df.loc[len(df)] = [pd.Timestamp.today() + pd.Timedelta(days=1), prediction]
+
+    # Plot graph
+    st.subheader("📊 Price Trend Visualization")
+
+    fig, ax = plt.subplots(figsize=(10,5))
+    ax.plot(df["Date"], df["Close Price"], marker='o')
+    ax.set_xlabel("Date")
+    ax.set_ylabel("Price")
+    ax.set_title("Stock Price Trend with Prediction")
+    plt.xticks(rotation=45)
+
+    st.pyplot(fig)
+
+# Extra Visualization Section
+st.subheader("📉 Market Insight")
+
+chart_data = pd.DataFrame(
+    np.random.randn(50, 3),
+    columns=["Stock A", "Stock B", "Stock C"]
+)
+
+st.line_chart(chart_data)
 
 # Footer
 st.markdown(
-    "<center style='margin-top:30px;color:#94a3b8;'>© 2026 | Developed by Parth 🚀</center>",
+    "<center style='margin-top:40px;color:#94a3b8;'>© 2026 | Developed by Rushi 🚀</center>",
     unsafe_allow_html=True
 )

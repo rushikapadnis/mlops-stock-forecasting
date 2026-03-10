@@ -53,15 +53,18 @@ st.markdown('<div class="title">📈 Stock Forecasting Dashboard</div>', unsafe_
 st.markdown('<div class="subtitle">Predict stock closing price using Machine Learning</div>', unsafe_allow_html=True)
 
 # Layout
-col1, col2 = st.columns(2)
+# Center Layout
+left, center, right = st.columns([1,2,1])
 
-with col1:
+with center:
     st.subheader("📥 Input Stock Data")
 
     open_price = st.number_input("Open Price", min_value=0.0, format="%.2f")
     high_price = st.number_input("High Price", min_value=0.0, format="%.2f")
     low_price = st.number_input("Low Price", min_value=0.0, format="%.2f")
     volume = st.number_input("Volume", min_value=0.0, format="%.2f")
+
+    predict_button = st.button("🔮 Predict Close Price")
 
 predict_button = st.button("🔮 Predict Close Price")
 

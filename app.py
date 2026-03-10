@@ -2,6 +2,7 @@ import streamlit as st
 import joblib
 import numpy as np
 
+model = joblib.load("final_stock_model.pkl")
 # Page Config
 st.set_page_config(
     page_title="Stock Price Prediction",

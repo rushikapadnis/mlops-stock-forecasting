@@ -1,0 +1,125 @@
+# =============================================================================
+# SOLAR POWER GENERATION MLOPS - MAIN CONFIGURATION
+# =============================================================================
+
+project:
+  name: "solar_power_mlops"
+  version: "1.0.0"
+  description: "End-to-end MLOps pipeline for solar power generation prediction using regression models and Streamlit deployment"
+
+# -----------------------------------------------------------------------------
+# DATA CONFIGURATION
+# -----------------------------------------------------------------------------
+data:
+  raw_path: "data/raw/solar_power.csv"
+  processed_path: "data/processed"
+  features_path: "data/features"
+  test_size: 0.2
+  validation_size: 0.1
+  random_state: 42
+  target_column: "power_generated"
+
+# -----------------------------------------------------------------------------
+# FEATURE ENGINEERING CONFIGURATION
+# -----------------------------------------------------------------------------
+features:
+  numerical_imputation: "mean"        # Options: mean, median
+  scaling_method: "standard"          # Options: standard, minmax, robust
+
+  engineered_features:
+    - solar_exposure_index
+    - wind_energy_index
+    - air_density_proxy
+
+  feature_selection: false
+  selected_features_path: "artifacts/selected_features.pkl"
+
+# -----------------------------------------------------------------------------
+# MODEL CONFIGURATION
+# -----------------------------------------------------------------------------
+model:
+  type: "gradient_boosting"            # Options: linear_regression, random_forest, gradient_boosting
+
+  gradient_boosting:
+    n_estimators: 100
+    learning_rate: 0.1
+    max_depth: 5
+    random_state: 42
+
+  random_forest:
+    n_estimators: 200
+    max_depth: 12
+    min_samples_split: 2
+    min_samples_leaf: 1
+    random_state: 42
+    n_jobs: -1
+
+  linear_regression:
+    fit_intercept: true
+    n_jobs: -1
+
+# -----------------------------------------------------------------------------
+# TRAINING CONFIGURATION
+# -----------------------------------------------------------------------------
+training:
+  cross_validation: true
+  cv_folds: 5
+  early_stopping: false
+  hyperparameter_tuning: false
+  tuning_method: "grid_search"         # Options: grid_search, random_search
+
+# -----------------------------------------------------------------------------
+# EVALUATION CONFIGURATION
+# -----------------------------------------------------------------------------
+evaluation:
+  metrics:
+    - r2_score
+    - mean_absolute_error
+    - mean_squared_error
+    - root_mean_squared_error
+
+  save_plots: true
+  plots_path: "experiments/plots"
+
+# -----------------------------------------------------------------------------
+# MODEL ARTIFACTS
+# -----------------------------------------------------------------------------
+artifacts:
+  model_path: "solar_model.pkl"
+  imputer_path: "imputer.pkl"
+  scaler_path: "scaler.pkl"
+
+# -----------------------------------------------------------------------------
+# STREAMLIT DEPLOYMENT CONFIGURATION
+# -----------------------------------------------------------------------------
+deployment:
+  app_file: "app.py"
+  framework: "streamlit"
+  port: 8501
+  cloud: "streamlit_cloud"
+
+# -----------------------------------------------------------------------------
+# EXPERIMENT TRACKING
+# -----------------------------------------------------------------------------
+experiment:
+  tracking_uri: "experiments/mlruns"
+  experiment_name: "solar_power_regression"
+  log_models: true
+  log_artifacts: true
+
+# -----------------------------------------------------------------------------
+# MODEL REGISTRY
+# -----------------------------------------------------------------------------
+registry:
+  path: "models/registry"
+  promotion_threshold:
+    r2_score: 0.80
+    mean_absolute_error: 0.15
+
+# -----------------------------------------------------------------------------
+# LOGGING CONFIGURATION
+# -----------------------------------------------------------------------------
+logging:
+  level: "INFO"
+  log_file: "logs/pipeline.log"
+  format: "{time:YYYY-MM-DD HH:mm:ss} | {level} | {module}:{function}:{line} - {message}"

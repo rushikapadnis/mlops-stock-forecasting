@@ -64,9 +64,8 @@ with center:
     low_price = st.number_input("Low Price", min_value=0.0, format="%.2f")
     volume = st.number_input("Volume", min_value=0.0, format="%.2f")
 
-    predict_button = st.button("🔮 Predict Close Price")
+predict_button = st.button("🔮 Predict Close Price", key="predict_btn")
 
-predict_button = st.button("🔮 Predict Close Price")
 
 if predict_button:
 

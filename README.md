@@ -9,7 +9,7 @@ The project demonstrates a complete **MLOps workflow** including model training,
 
 Deployed using Streamlit Cloud.
 
-👉 https://your-streamlit-app-url.streamlit.app
+👉 https://mlops-stock-forecasting-4upsuhnbekkxmzxc4gqctf.streamlit.app/
 
 ---
 

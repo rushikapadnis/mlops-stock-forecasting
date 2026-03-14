@@ -130,11 +130,11 @@ Whenever code is pushed to **main**, pipelines run automatically.
 
 ---
 
-## 👨‍💻 Author
+## 👨‍💻
 
-Your Name
+Rushi Kapadnis
 
-GitHub: https://github.com/YOUR_USERNAME
+GitHub: https://github.com/rushikapadnis
 
 ---
 
